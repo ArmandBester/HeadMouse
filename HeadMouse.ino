@@ -45,13 +45,19 @@ unsigned long prevMouseMillis = 0;
 const long mouseInterval = 10;
 
 
+//Pressure click and scroll
+#define pPin A0
+int p = 0;
+
 
 
 void setup() {
-  // put your setup code here, to run once:
+  
   Serial.begin(9600); //mostly for debugging
   pinMode(leftLedPin, OUTPUT);
   pinMode(rightLedPin, OUTPUT);
+
+  pinMode(pPin, INPUT);
 
   // initialize the mpu
   mpu.initialize();
@@ -106,13 +112,30 @@ void loop() {
     
     
     Mouse.move(xAvg, yAvg);
-    Serial.print(xAvg);
-    Serial.print(" : ");
-    Serial.println(yAvg);
+    //Serial.print(xAvg);
+    //Serial.print(" : ");
+    //Serial.println(yAvg);
   }
   
 
   // ENd of mouse movement
+
+  //Beginning of clicking and scrolling section
+
+  p = analogRead(pPin);
+
+  Serial.println(p);
+
+
+
+
+
+
+
+
+
+
+  
   
 
 }
