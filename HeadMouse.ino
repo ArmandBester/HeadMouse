@@ -29,8 +29,9 @@ int scaler = 180;
 
 
 //Smoothing of mouse movement
-int xReadings[10];
-int yReadings[10];
+const int nReadings = 3;
+int xReadings[nReadings];
+int yReadings[nReadings];
 int xTot;
 int yTot;
 int xAvg;
@@ -41,7 +42,7 @@ int readIndex;
 //Timing control
 //----> Mouse movement
 unsigned long prevMouseMillis = 0;
-const long mouseInterval = 20;
+const long mouseInterval = 10;
 
 
 
@@ -61,6 +62,12 @@ void setup() {
       Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
     }
 
+   // Smoothing of mouse movement, initialize empty arrays
+   for (int i = 0; i < nReadings; i++){
+    xReadings[i] = 0;
+    yReadings[i] = 0;
+   }
+
   
 }
 
@@ -76,10 +83,32 @@ void loop() {
     mpu.getMotion6(&Ax, &Ay, &Az, &Gx, &Gy, &Gz);
     mx = -(Gz-200)/scaler; //adjust offsets for the gyro to cancel drift  
     my = (Gy-225)/scaler; 
-    Mouse.move(mx, my);
-    Serial.print(mx);
+    
+    //smoothing of mouse movement
+    xTot = xTot - xReadings[readIndex];
+    yTot = yTot - yReadings[readIndex];
+
+    xReadings[readIndex] = mx;
+    yReadings[readIndex] = my;
+
+    xTot = xTot + xReadings[readIndex];
+    yTot = yTot + yReadings[readIndex];
+
+    readIndex = readIndex + 1;
+
+    //reset readIndex if nReads are reached
+    if (readIndex <= nReadings){
+      readIndex = 0;
+    }
+
+    xAvg = xTot / nReadings;
+    yAvg = yTot / nReadings;
+    
+    
+    Mouse.move(xAvg, yAvg);
+    Serial.print(xAvg);
     Serial.print(" : ");
-    Serial.println(my);
+    Serial.println(yAvg);
   }
   
 
