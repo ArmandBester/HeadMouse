@@ -1,19 +1,15 @@
 /*Use a gyroscope to emulate a mouse and a presure
- * sensor for clicking and scrolling using a mouth 
- * piece.
- * Include some libraries
- * MPU6050 and I2Cdev from https://github.com/jrowberg/i2cdevlib
- */
- 
+   sensor for clicking and scrolling using a mouth
+   piece.
+   Include some libraries
+   MPU6050 and I2Cdev from https://github.com/jrowberg/i2cdevlib
+*/
+
 
 #include <Mouse.h>
 #include <I2Cdev.h>
 #include <MPU6050.h>
 
-
-// Define pins for debuging mouse clicks, this is just LEDs
-#define leftLedPin 4
-#define rightLedPin 5
 
 //Define inttypes to the 6 axis values which will be obtained from the MPU6050
 int16_t Ax, Ay, Az, Gx, Gy, Gz;
@@ -48,11 +44,19 @@ const long mouseInterval = 10;
 //Pressure click and scroll
 #define pPin A0
 int p = 0;
+int pTimer = 0;
 
+// Define pins for debuging mouse clicks, this is just LEDs
+#define leftLedPin 4
+#define rightLedPin 5
+
+// On startup callebrate ambient pressure
+int cPressure = 0;
+int aPressure = 500;  //will update this value with cPressure
 
 
 void setup() {
-  
+
   Serial.begin(9600); //mostly for debugging
   pinMode(leftLedPin, OUTPUT);
   pinMode(rightLedPin, OUTPUT);
@@ -63,18 +67,29 @@ void setup() {
   mpu.initialize();
   if (!mpu.testConnection()) {
     while (1);
-    }
-    else{
-      Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
-    }
+  }
+  else {
+    Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
+  }
 
-   // Smoothing of mouse movement, initialize empty arrays
-   for (int i = 0; i < nReadings; i++){
+  // Smoothing of mouse movement, initialize empty arrays
+  for (int i = 0; i < nReadings; i++) {
     xReadings[i] = 0;
     yReadings[i] = 0;
-   }
+  }
 
+  //callibrate to ambient pressure
+
+  for (int k = 0; k < 10; k++) {
+    cPressure = cPressure + analogRead(pPin);
+  }
+  aPressure = cPressure/10;
+   
   
+
+
+
+
 }
 
 void loop() {
@@ -83,13 +98,13 @@ void loop() {
 
   unsigned long currentMouseMillis = millis();
 
-  if (currentMouseMillis - prevMouseMillis >= mouseInterval){
+  if (currentMouseMillis - prevMouseMillis >= mouseInterval) {
     prevMouseMillis = currentMouseMillis;
-   
+
     mpu.getMotion6(&Ax, &Ay, &Az, &Gx, &Gy, &Gz);
-    mx = -(Gz-200)/scaler; //adjust offsets for the gyro to cancel drift  
-    my = (Gy-225)/scaler; 
-    
+    mx = -(Gz - 200) / scaler; //adjust offsets for the gyro to cancel drift
+    my = (Gy - 225) / scaler;
+
     //smoothing of mouse movement
     xTot = xTot - xReadings[readIndex];
     yTot = yTot - yReadings[readIndex];
@@ -103,39 +118,40 @@ void loop() {
     readIndex = readIndex + 1;
 
     //reset readIndex if nReads are reached
-    if (readIndex <= nReadings){
+    if (readIndex <= nReadings) {
       readIndex = 0;
     }
 
     xAvg = xTot / nReadings;
     yAvg = yTot / nReadings;
-    
-    
+
+
     Mouse.move(xAvg, yAvg);
     //Serial.print(xAvg);
     //Serial.print(" : ");
     //Serial.println(yAvg);
   }
-  
+
 
   // ENd of mouse movement
+  //------------------------------------------------------------------------------//
 
   //Beginning of clicking and scrolling section
 
-  p = analogRead(pPin);
-
-  Serial.println(p);
-
-
-
-
-
-
-
-
-
+  //p = analogRead(pPin);
 
   
-  
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
