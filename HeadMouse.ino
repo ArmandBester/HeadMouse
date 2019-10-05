@@ -44,7 +44,13 @@ const long mouseInterval = 10;
 //Pressure click and scroll
 #define pPin A0
 int p = 0;
-int pTimer = 0;
+int pTimerPos = 0;
+int pTimerNeg = 0;
+int pThresh = 150;
+int clickTrigger = 300;
+int scrollTrigger = 1200;
+
+
 
 // Define pins for debuging mouse clicks, this is just LEDs
 #define leftLedPin 4
@@ -138,7 +144,24 @@ void loop() {
 
   //Beginning of clicking and scrolling section
 
-  //p = analogRead(pPin);
+  
+  if (analogRead(pPin) >= (aPressure + pThresh)){
+    pTimerPos ++;
+  }
+  if (analogRead(pPin) < (aPressure + pThresh)){
+    pTimerPos = 0;
+  }
+
+  if (analogRead(pPin) <= (aPressure - pThresh)){
+    pTimerNeg ++;
+  }
+  if (analogRead(pPin) > (aPressure - pThresh)){
+    pTimerNeg = 0;
+  }
+  Serial.print("pos: ");
+  Serial.print(pTimerPos);
+  Serial.print(", neg: ");
+  Serial.println(pTimerNeg);
 
   
 
