@@ -1,2 +1,4 @@
+---
 # HeadMouse
-Arduino and gyroscope mouse control
+---
+### Arduino gyroscope and pressure sensor pressure control mouse control
