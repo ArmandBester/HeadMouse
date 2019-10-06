@@ -1,4 +1,4 @@
-/*Use a gyroscope to emulate a mouse and a presure
+/*Use a gyroscope to emulate mouse movement and a presure
    sensor for clicking and scrolling using a mouth
    piece.
    Include some libraries
@@ -20,7 +20,7 @@ MPU6050 mpu;
 int mx;
 int my;
 //Define a scaler value to change the sensitivity of the mouse
-int scaler = 180;
+int scaler = 100;
 
 
 
@@ -48,8 +48,8 @@ int pTimerPos = 0;
 int pTimerNeg = 0;
 int pThresh = 150;
 int clickTrigger = 300;
-int scrollTrigger = 1200;
-
+int scrollTrigger = 800;
+int scrollDist = 10;
 
 
 // Define pins for debuging mouse clicks, this is just LEDs
@@ -90,13 +90,12 @@ void setup() {
     cPressure = cPressure + analogRead(pPin);
   }
   aPressure = cPressure/10;
-   
-  
 
-
-
+  //end of setup
 
 }
+
+
 
 void loop() {
 
@@ -144,24 +143,37 @@ void loop() {
 
   //Beginning of clicking and scrolling section
 
-  
+  //positive pressure controls
   if (analogRead(pPin) >= (aPressure + pThresh)){
     pTimerPos ++;
   }
-  if (analogRead(pPin) < (aPressure + pThresh)){
+  //left click
+  if (analogRead(pPin) < (aPressure + pThresh) && pTimerPos >= clickTrigger && pTimerPos < scrollTrigger){
+    Mouse.click();
+    pTimerPos = 0;
+  }
+  //down scroll
+  if (analogRead(pPin) < (aPressure + pThresh) && pTimerPos >= scrollTrigger){
+    Mouse.move(0, 0, -scrollDist);
     pTimerPos = 0;
   }
 
+  //negative pressure controls
   if (analogRead(pPin) <= (aPressure - pThresh)){
     pTimerNeg ++;
   }
-  if (analogRead(pPin) > (aPressure - pThresh)){
+  //right click
+  if (analogRead(pPin) > (aPressure - pThresh) && pTimerNeg >= clickTrigger && pTimerNeg < scrollTrigger){
+    Mouse.click(MOUSE_RIGHT);
     pTimerNeg = 0;
   }
-  Serial.print("pos: ");
-  Serial.print(pTimerPos);
-  Serial.print(", neg: ");
-  Serial.println(pTimerNeg);
+  //up scroll
+  if (analogRead(pPin) > (aPressure - pThresh) && pTimerNeg >= scrollTrigger){
+    Mouse.move(0, 0, scrollDist);
+    pTimerNeg = 0;
+  }
+
+  
 
   
 
