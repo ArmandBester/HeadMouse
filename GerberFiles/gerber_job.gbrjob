@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2019-08-30T11:44:58Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.4.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "HeadMouse_small"
+        },
+        "Owner": "Armand Bester <besterpa.sci@gmail.com>",
+        "Size": {
+            "X": 65.71,
+            "Y": 26.66
+        }
+    }
+}

@@ -2,7 +2,7 @@
    sensor for clicking and scrolling using a mouth
    piece.
    Include some libraries
-   MPU6050 and I2Cdev from https://github.com/jrowberg/i2cdevlib
+   MPU6050 and I2Cdev from https://github.com/jrowberg/i2cdevlib or forked at https://github.com/ArmandBester/i2cdevlib (probably best to stick with the original rather)
 */
 
 
@@ -132,9 +132,9 @@ void loop() {
 
 
     Mouse.move(xAvg, yAvg);
-    //Serial.print(xAvg);
-    //Serial.print(" : ");
-    //Serial.println(yAvg);
+    Serial.print(xAvg);
+    Serial.print(" : ");
+    Serial.println(yAvg);
   }
 
 
