@@ -25,7 +25,7 @@ int scaler = 100;
 
 
 //Smoothing of mouse movement
-const int nReadings = 3;
+const int nReadings = 5;
 int xReadings[nReadings];
 int yReadings[nReadings];
 int xTot;
@@ -38,7 +38,7 @@ int readIndex;
 //Timing control
 //----> Mouse movement
 unsigned long prevMouseMillis = 0;
-const long mouseInterval = 10;
+const long mouseInterval = 5;  //10 is a safe value
 
 
 //Pressure click and scroll
@@ -46,7 +46,7 @@ const long mouseInterval = 10;
 int p = 0;
 int pTimerPos = 0;
 int pTimerNeg = 0;
-int pThresh = 150;
+int pThresh = 50;
 int clickTrigger = 300;
 int scrollTrigger = 800;
 int scrollDist = 10;
